@@ -446,7 +446,7 @@ void Graph<NodeType, ArcType>::aStar(Node* pStart, Node* pDest, void(*pProcess)(
 	for (int i = 0; i < max; i++) {
 		int x = get<3>(nodeArray()[i]->data());
 		int y = get<4>(nodeArray()[i]->data());
-		//int dist = 10;
+
 		int dist = sqrt(((gx-x)*(gx-x))+((gy-y)*(gy-y)));
 		nodeArray()[i]->setData(NodeType(get<0>(nodeArray()[i]->data()), get<1>(nodeArray()[i]->data()), dist, get<3>(nodeArray()[i]->data()), get<4>(nodeArray()[i]->data())));
 	}
@@ -457,7 +457,7 @@ void Graph<NodeType, ArcType>::aStar(Node* pStart, Node* pDest, void(*pProcess)(
 
 		for (; iter != endIter; iter++) {
 
-			if ((*iter).node() != pq.top()->previous()) {//&&
+			if ((*iter).node() != pq.top()->previous()) {
 
 				int gN = get<2>(pq.top()->data()) + (*iter).weight();
 				int hN = get<1>(pq.top()->data());
@@ -466,9 +466,10 @@ void Graph<NodeType, ArcType>::aStar(Node* pStart, Node* pDest, void(*pProcess)(
 				int fC = get<1>((*iter).node()->data()) + get<2>((*iter).node()->data());
 				if (distC < fC) {
 
-					(*iter).node()->setData(NodeType(get<0>((*iter).node()->data()), gN, get<2>((*iter).node()->data()), get<3>((*iter).node()->data()), get<4>((*iter).node()->data())));
 					(*iter).node()->setPrevious(pq.top());
+					(*iter).node()->setData(NodeType(get<0>((*iter).node()->data()), gN, get<2>((*iter).node()->data()), get<3>((*iter).node()->data()), get<4>((*iter).node()->data())));
 				}
+
 				if ((*iter).node()->marked() != true) {
 
 					pq.push((*iter).node());

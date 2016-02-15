@@ -1,7 +1,26 @@
-#include "stdafx.h"
+#include "stdafx.h" 
+#ifdef _DEBUG 
+#pragma comment(lib,"sfml-graphics-d.lib") 
+#pragma comment(lib,"sfml-audio-d.lib") 
+#pragma comment(lib,"sfml-system-d.lib") 
+#pragma comment(lib,"sfml-window-d.lib") 
+#pragma comment(lib,"sfml-network-d.lib") 
+#else 
+#pragma comment(lib,"sfml-graphics.lib") 
+#pragma comment(lib,"sfml-audio.lib") 
+#pragma comment(lib,"sfml-system.lib") 
+#pragma comment(lib,"sfml-window.lib") 
+#pragma comment(lib,"sfml-network.lib") 
+#endif 
+#pragma comment(lib,"opengl32.lib") 
+#pragma comment(lib,"glu32.lib") 
+
+#include "SFML/Graphics.hpp" 
+#include "SFML/OpenGL.hpp" 
+#include <iostream> 
+#define _USE_MATH_DEFINES
+#include <math.h>
 #include <tuple>
-#include <array>
-#include <iostream>
 #include <fstream>
 #include <string>
 #include "Graph.h"
@@ -9,14 +28,8 @@
 using namespace std;
 
 
-
-//typedef GraphArc<pair<string, int>, int > Arc;
-//typedef GraphNode<pair<string, int>, int > Node;
-//const int size = 3;
-//typedef GraphArc<array<char, 3>, int > Arc;
-//typedef GraphNode<array<char, 3>, int > Node;
 typedef GraphNode<tuple<string, int, int, int, int>, int> Node;
-typedef GraphArc<tuple<string, int, int, int, int>, int> Arc;
+//typedef GraphArc<tuple<string, int, int, int, int>, int> Arc;
 
 
 void visit(Node * pNode) {
@@ -30,23 +43,19 @@ int main(int argc, char *argv[]) {
 	
 
 	string c;
-
 	int i = 0;
 	int x;
 	int y;
 	ifstream myfile;
-	myfile.open ("nodes.txt");
 
-	//For each node v in graph G
-	//Calculate h[v] // Compute estimated distance to goal for each node.
-	//Initialise g[v] to infinity // Don’t yet know the distances to these nodes 
+	myfile.open ("nodes2.txt");
 	while ( myfile >> c >> x >> y) {
 		graph.addNode(tuple<string, int, int, int, int>(c, 99999999, 99999999, x, y), i++);
 	}
-
 	myfile.close();
-	myfile.open("arcs.txt");
 
+
+	myfile.open("arcs2.txt");
 	int from, to, weight;
 	while ( myfile >> from >> to >> weight ) {
 		graph.addArc(from, to, weight);
@@ -58,7 +67,8 @@ int main(int argc, char *argv[]) {
 	graph.clearMarks();
 	
 	path.clear();
-	graph.aStar(graph.nodeArray()[0], graph.nodeArray()[1], visit, path, 30);
+
+	graph.aStar(graph.nodeArray()[0], graph.nodeArray()[6], visit, path, 30);
 
 	for (Node* n : path)
 		visit(n);
