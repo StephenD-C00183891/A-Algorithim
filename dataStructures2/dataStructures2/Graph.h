@@ -436,10 +436,10 @@ template<class NodeType, class ArcType>
 void Graph<NodeType, ArcType>::aStar(Node* pStart, Node* pDest, void(*pProcess)(Node*), std::vector<Node *>& path, int max) {
 
 	priority_queue<Node *, vector<Node*>, NodeSearchCostComparer> pq;
-
+	pStart->setData(NodeType(get<0>(pStart->data()), 0, get<2>(pStart->data()), get<3>(pStart->data()), get<4>(pStart->data())));
 	pq.push(pStart);
 	pStart->setMarked(true);
-	pStart->setData(NodeType(get<0>(pStart->data()), 0, get<2>(pStart->data()), get<3>(pStart->data()), get<4>(pStart->data())));
+	
 	float gx = get<3>(pDest->data());
 	float gy = get<4>(pDest->data());
 
@@ -464,6 +464,7 @@ void Graph<NodeType, ArcType>::aStar(Node* pStart, Node* pDest, void(*pProcess)(
 				int distC = gN + hN;
 
 				int fC = get<1>((*iter).node()->data()) + get<2>((*iter).node()->data());
+
 				if (distC < fC) {
 
 					(*iter).node()->setPrevious(pq.top());

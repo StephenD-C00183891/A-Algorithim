@@ -49,18 +49,28 @@ int main(int argc, char *argv[]) {
 
     Graph<tuple<string, int, int, int, int>,int>graph( 30 );
 	vector<sf::CircleShape> circles;
+	vector<sf::CircleShape> fillCircles;
 	vector<sf::VertexArray> lines2;
+	vector<sf::CircleShape> selectCircles;
 	
+	bool start = false, end = false;
 	string c;
 	int i = 0;
+	int startNode = 0 , endNode = 1;
 	int x;
 	int y;
+	int fillMax = 0;
 	ifstream myfile;
+
+	sf::CircleShape endCircle(20);
+	sf::CircleShape startCircle(20);
+
+	int mouseX = sf::Mouse::getPosition().x;
+	int mouseY = sf::Mouse::getPosition().y;
 
 	myfile.open ("nodes2.txt");
 	while ( myfile >> c >> x >> y) {
 		graph.addNode(tuple<string, int, int, int, int>(c, 99999999, 99999999, x, y), i++);
-
 	}
 	myfile.close();
 
@@ -87,10 +97,17 @@ int main(int argc, char *argv[]) {
 	
 	path.clear();
 
-	graph.aStar(graph.nodeArray()[0], graph.nodeArray()[6], visit, path, 30);
+	graph.aStar(graph.nodeArray()[0], graph.nodeArray()[1], visit, path, 30);
+	//graph.aStar(graph.nodeArray()[0], graph.nodeArray()[4], visit, path, 30);
 
-	for (Node* n : path)
+	for (Node* n : path) {
+		sf::CircleShape circle(20);
+		circle.setPosition(get<3>(n->data()), get<4>(n->data()));
+		circle.setFillColor(sf::Color::Red);
+		fillCircles.push_back(circle);
+		fillMax++;
 		visit(n);
+	}
 
 
 	for (int i = 0; i < 30; i++) {
@@ -103,6 +120,11 @@ int main(int argc, char *argv[]) {
 	// Start game loop 
 	while (window.isOpen())
 	{
+
+		if (start == true && end == true)
+		{
+			
+		}
 		// Process events 
 		sf::Event Event;
 		while (window.pollEvent(Event))
@@ -114,15 +136,36 @@ int main(int argc, char *argv[]) {
 			// Escape key : exit 
 			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Escape))
 				window.close();
-		}
 
+			/*for (int i = 0; i < 30; i++)
+			{
+				if (mouseX > circles[i].getPosition().x && mouseX < circles[i].getPosition().x + 20
+					&& mouseY > circles[i].getPosition().y && mouseY < circles[i].getPosition().y + 20
+					&& start == false && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+					start = true;
+					startNode = i;
+					
+					startCircle.setPosition(get<3>(graph.nodeArray()[i]->data()), get<4>(graph.nodeArray()[i]->data()));
+					startCircle.setFillColor(sf::Color::Blue);
+
+
+				}
+				else if (mouseX > circles[i].getPosition().x && mouseX < circles[i].getPosition().x + 20
+					&& mouseY > circles[i].getPosition().y && mouseY < circles[i].getPosition().y + 20
+					&& start == true && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+					end = true;
+					endNode = i;
+					
+					endCircle.setPosition(get<3>(graph.nodeArray()[i]->data()), get<4>(graph.nodeArray()[i]->data()));
+					endCircle.setFillColor(sf::Color::Blue);
+
+				}
+			}*/
+		}
 		//window.clear();
 
-		for (int i = 0; i < 30; i++) {
-
-			window.draw(circles[i]);
-			
-		}
 		for (int i = 0; i < 74; i++)
 		{
 			window.draw(lines2[i]);
@@ -132,6 +175,14 @@ int main(int argc, char *argv[]) {
 
 			window.draw(circles[i]);
 		}
+
+		for (int i = 0; i < fillMax; i++) {
+
+			window.draw(fillCircles[i]);
+		}
+
+		//window.draw(startCircle);
+		//window.draw(endCircle);
 		
 
 		window.display();
