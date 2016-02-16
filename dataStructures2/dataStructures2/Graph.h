@@ -56,7 +56,7 @@ public:
 			tuple<string, int, int, int, int> p2 = n2->data();
 			//int p1a = get<1>(p1) +get<2>(p1);
 			//int p2a = get<1>(p2) +get<2>(p2);
-			return get<1>(p1) +get<2>(p1) > get<1>(p2) +get<2>(p2);
+			return get<1>(p1) + get<2>(p1) > get<1>(p2) + get<2>(p2);
 		}
 	};
 
@@ -384,69 +384,129 @@ void Graph<NodeType, ArcType>::adaptedBreadthFirst( Node* pCurrent, Node *pGoal 
    }  
 }
 template<class NodeType, class ArcType>
-void Graph<NodeType, ArcType>::ucs(Node* pStart, Node* pDest, void(*pVisitFunc)(Node*), std::vector<Node *>& path){
+void Graph<NodeType, ArcType>::ucs(Node* startNode, Node* targetNode, void(*pVisitFunc)(Node*), std::vector<Node *>& path){
 	
-	//Let s = the starting node, g = goal or destination node
-	//	Let pq = a new priority queue
-	priority_queue<Node *, vector<Node*>, NodeSearchCostComparer> pq;
-	
-	//	Initialise d[s] to 0
-	pStart->setData(pair<string,int>(pStart->data().first,0));
-	//	For each node v in graph G
-	//	Initialise d[v] to infinity // don’t yet know the distances to these nodes
-	//	Add s to the pq
-	pq.push(pStart);
-	//	Mark(s)
-	pStart->setMarked(true);
-	while (pq.size() != 0 && pq.top() != pDest) {
-		list<Arc>::const_iterator iter = pq.top()->arcList().begin();
-		list<Arc>::const_iterator endIter = pq.top()->arcList().end();
+	////Let s = the starting node, g = goal or destination node
+	////	Let pq = a new priority queue
+	//priority_queue<Node *, vector<Node*>, NodeSearchCostComparer> pq;
 
-		for (; iter != endIter; iter++) {
-			if ((*iter).node() != pq.top()->previous()){
+	////	Initialise d[s] to 0
+	//pStart->setData(NodeType(get<0>(pStart->data()), 0, get<2>(pStart->data()), get<3>(pStart->data()), get<4>(pStart->data())));
+	////	For each node v in graph G
+	////	Initialise d[v] to infinity // don’t yet know the distances to these nodes
+	////	Add s to the pq
+	//pq.push(pStart);
+	////	Mark(s)
+	//pStart->setMarked(true);
+	//while (pq.size() != 0 && pq.top() != pDest) {
+	//	list<Arc>::const_iterator iter = pq.top()->arcList().begin();
+	//	list<Arc>::const_iterator endIter = pq.top()->arcList().end();
 
-				int distC = (*iter).weight() + pq.top()->data().second;
+	//	for (; iter != endIter; iter++) {
+	//		if ((*iter).node() != pq.top()->previous()){
 
-				if (distC < (*iter).node()->data().second)
-				{
-					(*iter).node()->setData(pair<string, int>((*iter).node()->data().first, distC));
-					(*iter).node()->setPrevious(pq.top());
-				}
+	//			int distC = (*iter).weight() + get<3>(pq.top()->data());
 
-				if ((*iter).node()->marked() == false) {
-					pq.push((*iter).node());
-					(*iter).node()->setMarked(true);
+	//			if (distC < get<3>((*iter).node()->data()));
+	//			{
+	//				//(*iter).node()->setData(pair<string, int>((*iter).node()->data().first, distC));
+	//				(*iter).node()->setData(NodeType(get<0>(pStart->data()), get<1>(pStart->data()), distC, get<3>(pStart->data()), get<4>(pStart->data())));
+	//				(*iter).node()->setPrevious(pq.top());
+	//			}
+
+	//			if ((*iter).node()->marked() == false) {
+	//				pq.push((*iter).node());
+	//				(*iter).node()->setMarked(true);
+	//			}
+	//		}
+	//	}
+	//	pq.pop();
+	//}
+	//for (auto node = pDest; node->previous() != 0; node = node->previous())
+	//{
+	//	path.push_back(node);
+	//}
+	//path.push_back(pStart);
+
+	if (startNode != NULL && targetNode != NULL)
+	{//check for errors
+		//Create a priorityQueue
+		priority_queue<Node*, vector<Node*>, NodeSearchCostComparer> nodeQueue;
+		//Create a NodeType that holds data
+		NodeType data = startNode->data();
+		//set weight of start to 0
+		get<2>(data) = 0;
+		startNode->setData(data);
+		//Initialize our Queue with our starting node
+		nodeQueue.push(startNode);
+		//Mark the starting node as it has been visited
+		startNode->setMarked(true);
+
+		while (nodeQueue.size() != 0 && nodeQueue.top() != targetNode)
+		{//nodeQueue.top() = current node
+			pVisitFunc(nodeQueue.top());
+			list<Arc>::const_iterator iter = nodeQueue.top()->arcList().begin();
+			list<Arc>::const_iterator endIter = nodeQueue.top()->arcList().end();
+			for (; iter != endIter; iter++)
+			{
+				//topNode is the node being expanded
+				Node * topNode = nodeQueue.top();
+				Node * childNode = (*iter).node();
+
+				if (childNode != topNode->previous())
+				{ // don’t go back to a predecessor
+					NodeType topNodeData = topNode->data();
+					int distCost = (*iter).weight() + get<3>(topNodeData); //(*iter).weight() cost of arc related to node 
+
+					NodeType childNodeData = childNode->data();
+					if (distCost < get<3>(childNodeData))
+					{ //We want to take the path that is least costly
+						NodeType data = childNode->data();
+						get<3>(data) = distCost;
+						childNode->setData(data);
+						childNode->setPrevious(nodeQueue.top());
+					}
+					if (!childNode->marked())
+					{//if our child hasn't been marked then
+						//Add it to our queue and mark it
+						nodeQueue.push(childNode);
+						childNode->setMarked(true);
+					}
 				}
 			}
 		}
-		pq.pop();					
 	}
-	for (auto node = pDest; node->previous() != 0; node = node->previous())
-	{
-		path.push_back(node);
-	}
-	path.push_back(pStart);
 
 }
 
 template<class NodeType, class ArcType>
 void Graph<NodeType, ArcType>::aStar(Node* pStart, Node* pDest, void(*pProcess)(Node*), std::vector<Node *>& path, int max, std::vector<Node *>& attemptedPath) {
 
+	for (int i = 0; i < max; i++) {
+		nodeArray()[i]->setData(NodeType(get<0>(nodeArray()[i]->data()), 99999999, 99999999, get<3>(nodeArray()[i]->data()), get<4>(nodeArray()[i]->data())));
+	}
+
 	priority_queue<Node *, vector<Node*>, NodeSearchCostComparer> pq;
+	/*ucs(pStart, pDest, pProcess, path);
+	path.clear();*/
+	
 	pStart->setData(NodeType(get<0>(pStart->data()), 0, get<2>(pStart->data()), get<3>(pStart->data()), get<4>(pStart->data())));
 	pq.push(pStart);
 	pStart->setMarked(true);
-	
+
 	float gx = get<3>(pDest->data());
 	float gy = get<4>(pDest->data());
 
 	for (int i = 0; i < max; i++) {
+		
+
 		int x = get<3>(nodeArray()[i]->data());
 		int y = get<4>(nodeArray()[i]->data());
 
 		int dist = sqrt(((gx-x)*(gx-x))+((gy-y)*(gy-y)));
 		nodeArray()[i]->setData(NodeType(get<0>(nodeArray()[i]->data()), get<1>(nodeArray()[i]->data()), dist, get<3>(nodeArray()[i]->data()), get<4>(nodeArray()[i]->data())));
 	}
+	
 
 	while (pq.size() != 0 && pq.top() != pDest) {
 		list<Arc>::const_iterator iter = pq.top()->arcList().begin();
@@ -463,10 +523,9 @@ void Graph<NodeType, ArcType>::aStar(Node* pStart, Node* pDest, void(*pProcess)(
 				int fC = get<1>((*iter).node()->data()) + get<2>((*iter).node()->data());
 
 				if (distC < fC) {
-
 					
-					(*iter).node()->setData(NodeType(get<0>((*iter).node()->data()), gN, get<2>((*iter).node()->data()), get<3>((*iter).node()->data()), get<4>((*iter).node()->data())));
 					(*iter).node()->setPrevious(pq.top());
+					(*iter).node()->setData(NodeType(get<0>((*iter).node()->data()), gN, get<2>((*iter).node()->data()), get<3>((*iter).node()->data()), get<4>((*iter).node()->data())));
 				}
 
 				if ((*iter).node()->marked() != true) {

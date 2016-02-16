@@ -115,7 +115,22 @@ int main(int argc, char *argv[]) {
 
 	//graph.aStar(graph.nodeArray()[0], graph.nodeArray()[15], visit, path, 30);
 
-	
+	sf::Texture startButtonTexture;
+	startButtonTexture.loadFromFile("startbutton.png");
+	sf::Texture resetButtonTexture;
+	resetButtonTexture.loadFromFile("resetbutton.png");
+	sf::Sprite startButton;
+	startButton.setTexture(startButtonTexture);
+	startButton.setPosition(sf::Vector2f(10, 450));
+	startButton.setTextureRect(sf::IntRect(0, 0, startButtonTexture.getSize().x, startButtonTexture.getSize().y));
+	sf::Sprite resetButton;
+	resetButton.setTexture(resetButtonTexture);
+	resetButton.setPosition(sf::Vector2f(110, 450));
+	resetButton.setTextureRect(sf::IntRect(0, 0, resetButtonTexture.getSize().x, resetButtonTexture.getSize().y));
+
+	bool startClick = false;
+	bool resetClick = false;
+	bool selectNewNodes = true;
 
 	for (int i = 0; i < 30; i++) {
 		sf::CircleShape circle(20);
@@ -144,31 +159,33 @@ int main(int argc, char *argv[]) {
 		sf::CircleShape mouseCircle(10);
 		mouseCircle.setPosition(sf::Vector2f(mouseX, mouseY));
 
-		for (int i = 0; i < 30; i++)
-		{
-			if (mouseCircle.getGlobalBounds().intersects(circles[i].getGlobalBounds()) && start == false && sf::Mouse::isButtonPressed(sf::Mouse::Left))
-			{
-				start = true;
-				startNode = i;
-				sf::CircleShape circle(20);
-				circle.setPosition(circles[i].getPosition().x, circles[i].getPosition().y);
-				circle.setFillColor(sf::Color::Yellow);
-				selectCircles.push_back(circle);
-				selectMax++;
-			}
 
-			else if (mouseCircle.getGlobalBounds().intersects(circles[i].getGlobalBounds()) && start == true && sf::Mouse::isButtonPressed(sf::Mouse::Right))
+		if (selectNewNodes == true){
+			for (int i = 0; i < 30; i++)
 			{
-				end = true;
-				endNode = i;
-				sf::CircleShape circle(20);
-				circle.setPosition(circles[i].getPosition().x, circles[i].getPosition().y);
-				circle.setFillColor(sf::Color::Yellow);
-				selectCircles.push_back(circle);
-				selectMax++;
+				if (mouseCircle.getGlobalBounds().intersects(circles[i].getGlobalBounds()) && start == false && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+					start = true;
+					startNode = i;
+					sf::CircleShape circle(20);
+					circle.setPosition(circles[i].getPosition().x, circles[i].getPosition().y);
+					circle.setFillColor(sf::Color::Yellow);
+					selectCircles.push_back(circle);
+					selectMax++;
+				}
+
+				else if (mouseCircle.getGlobalBounds().intersects(circles[i].getGlobalBounds()) && start == true && sf::Mouse::isButtonPressed(sf::Mouse::Right))
+				{
+					end = true;
+					endNode = i;
+					sf::CircleShape circle(20);
+					circle.setPosition(circles[i].getPosition().x, circles[i].getPosition().y);
+					circle.setFillColor(sf::Color::Yellow);
+					selectCircles.push_back(circle);
+					selectMax++;
+				}
 			}
 		}
-
 		sf::Event Event;
 		while (window.pollEvent(Event))
 		{
@@ -179,10 +196,15 @@ int main(int argc, char *argv[]) {
 			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Escape))
 				window.close();
 		}
-
-		if (start == true && end == true) {
+		if (mouseCircle.getGlobalBounds().intersects(startButton.getGlobalBounds()) && sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+			startClick = true;
+		}
+		if (mouseCircle.getGlobalBounds().intersects(resetButton.getGlobalBounds()) && sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+			resetClick = true;
+		}
+		if (startClick == true && start == true && end == true) {
 			graph.aStar(graph.nodeArray()[startNode], graph.nodeArray()[endNode], visit, path, 30, attemptedPath);
-
+			selectNewNodes = false;
 			for (Node* n : path) {
 				sf::CircleShape circle(20);
 				circle.setPosition(get<3>(n->data()), get<4>(n->data()));
@@ -199,46 +221,66 @@ int main(int argc, char *argv[]) {
 				aFillMax++;
 				//visit(n);
 			}
+			std::cout << "/////////////////////////////////////////////////////////" << endl << "/////////////////////////////////////////////////////////" << endl;
+			startClick = false;
 			start = false;
 			end = false;
+		}
+		if (resetClick){
+			startClick = false;
+			start = false;
+			end = false;
+			resetClick = false;
+			fillCircles.clear();
+			aFillCircles.clear();
+			selectCircles.clear();
+			path.clear();
+			attemptedPath.clear();
+			endNode = 0;
+			startNode = 0;
+			for (int i = 0; i < 30; i++){
+				graph.nodeArray()[i]->setMarked(false);
+				graph.nodeArray()[i]->setPrevious(NULL);
+			}
+			selectNewNodes = true;
 		}
 
 
 		window.clear();
-		for (int i = 0; i < lineMax; i++)
+		for (int i = 0; i < lines2.size(); i++)
 		{
 			window.draw(lines2[i]);
 		}
 
-		for (int i = 0; i < circleMax; i++) {
+		for (int i = 0; i < circles.size(); i++) {
 
 			window.draw(circles[i]);
 		}
 
-		for (int i = 0; i < aFillMax; i++) {
+		for (int i = 0; i < aFillCircles.size(); i++) {
 
 			window.draw(aFillCircles[i]);
 		}
 
-		for (int i = 0; i < fillMax; i++) {
+		for (int i = 0; i < fillCircles.size(); i++) {
 
 			window.draw(fillCircles[i]);
 		}
-		for (int i = 0; i < selectMax; i++) {
+		for (int i = 0; i < selectCircles.size(); i++) {
 
 			window.draw(selectCircles[i]);
 		}
 
-		for (int i = 0; i < nameCount; i++) {
+		for (int i = 0; i < placeNames.size(); i++) {
 			window.draw(placeNames[i]);
 		}
-		for (int i = 0; i < weightCount; i++) {
+		for (int i = 0; i < weightList.size(); i++) {
 			window.draw(weightList[i]);
 		}
 
-
-		
 		window.draw(mouseCircle);
+		window.draw(startButton);
+		window.draw(resetButton);
 		window.display();
 	}
 	return EXIT_SUCCESS;
