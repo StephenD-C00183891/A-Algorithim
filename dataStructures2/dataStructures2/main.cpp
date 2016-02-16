@@ -50,6 +50,7 @@ int main(int argc, char *argv[]) {
     Graph<tuple<string, int, int, int, int>,int>graph( 30 );
 	vector<sf::CircleShape> circles;
 	vector<sf::CircleShape> fillCircles;
+	vector<sf::CircleShape> aFillCircles;
 	vector<sf::VertexArray> lines2;
 	vector<sf::CircleShape> selectCircles;
 	
@@ -60,6 +61,7 @@ int main(int argc, char *argv[]) {
 	int x;
 	int y;
 	int fillMax = 0;
+	int aFillMax = 0;
 	int lineMax = 0;
 	int circleMax = 0;
 	ifstream myfile;
@@ -91,6 +93,7 @@ int main(int argc, char *argv[]) {
     myfile.close();
 
 	std::vector<Node*> path;
+	std::vector<Node*> attemptedPath;
 	cout << '\n' << "A*: " << endl;
 	graph.clearMarks();
 	
@@ -98,14 +101,7 @@ int main(int argc, char *argv[]) {
 
 	//graph.aStar(graph.nodeArray()[0], graph.nodeArray()[15], visit, path, 30);
 
-	for (Node* n : path) {
-		sf::CircleShape circle(20);
-		circle.setPosition(get<3>(n->data()), get<4>(n->data()));
-		circle.setFillColor(sf::Color::Red);
-		fillCircles.push_back(circle);
-		fillMax++;
-		//visit(n);
-	}
+	
 
 	for (int i = 0; i < 30; i++) {
 		sf::CircleShape circle(20);
@@ -116,19 +112,27 @@ int main(int argc, char *argv[]) {
 
 	while (window.isOpen())
 	{
-		int mouseX = sf::Mouse::getPosition().x;
-		int mouseY = sf::Mouse::getPosition().y;
 
-		sf::CircleShape mouseCircle;
+		int mouseX = sf::Mouse::getPosition(window).x - 10;
+		int mouseY = sf::Mouse::getPosition(window).y - 10;
+
+		sf::CircleShape mouseCircle(10);
 		mouseCircle.setPosition(sf::Vector2f(mouseX, mouseY));
 
 		for (int i = 0; i < 30; i++)
 		{
-			if (mouseCircle.getGlobalBounds().intersects(circles[i].getGlobalBounds()))
+			if (mouseCircle.getGlobalBounds().intersects(circles[i].getGlobalBounds()) && start == false && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
-				//start = true;
+				start = true;
 				startNode = i;
-				graph.aStar(graph.nodeArray()[startNode], graph.nodeArray()[15], visit, path, 30);
+				
+			}
+
+			else if (mouseCircle.getGlobalBounds().intersects(circles[i].getGlobalBounds()) && start == true && sf::Mouse::isButtonPressed(sf::Mouse::Right))
+			{
+				end = true;
+				endNode = i;
+
 			}
 		}
 
@@ -141,7 +145,6 @@ int main(int argc, char *argv[]) {
 
 			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Escape))
 				window.close();
-
 			
 			/*}
 				else if (mouseX > circles[i].getPosition().x && mouseX < circles[i].getPosition().x + 20
@@ -158,6 +161,32 @@ int main(int argc, char *argv[]) {
 			}*/
 		}
 
+		if (start == true && end == true) {
+			graph.aStar(graph.nodeArray()[startNode], graph.nodeArray()[endNode], visit, path, 30, attemptedPath);
+
+			for (Node* n : path) {
+				sf::CircleShape circle(20);
+				circle.setPosition(get<3>(n->data()), get<4>(n->data()));
+				circle.setFillColor(sf::Color::Red);
+				fillCircles.push_back(circle);
+				fillMax++;
+				//visit(n);
+			}
+
+			for (Node* p : attemptedPath) {
+				sf::CircleShape circle2(20);
+				circle2.setPosition(get<3>(p->data()), get<4>(p->data()));
+				circle2.setFillColor(sf::Color::Blue);
+				aFillCircles.push_back(circle2);
+				aFillMax++;
+				//visit(n);
+			}
+			start = false;
+			end = false;
+		}
+
+
+		window.clear();
 		for (int i = 0; i < lineMax; i++)
 		{
 			window.draw(lines2[i]);
@@ -168,11 +197,18 @@ int main(int argc, char *argv[]) {
 			window.draw(circles[i]);
 		}
 
+		for (int i = 0; i < aFillMax; i++) {
+
+			window.draw(aFillCircles[i]);
+		}
+
 		for (int i = 0; i < fillMax; i++) {
 
 			window.draw(fillCircles[i]);
 		}
 
+		
+		window.draw(mouseCircle);
 		window.display();
 	}
 	return EXIT_SUCCESS;
