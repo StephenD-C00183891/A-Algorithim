@@ -16,12 +16,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
-    <Text Include="arcs2.txt">
-      <Filter>Source Files</Filter>
-    </Text>
-    <Text Include="nodes2.txt">
-      <Filter>Source Files</Filter>
-    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

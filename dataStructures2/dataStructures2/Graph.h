@@ -410,19 +410,16 @@ void Graph<NodeType, ArcType>::ucs(Node* pStart, Node* pDest, void(*pVisitFunc)(
 				if (distC < (*iter).node()->data().second)
 				{
 					(*iter).node()->setData(pair<string, int>((*iter).node()->data().first, distC));
-
 					(*iter).node()->setPrevious(pq.top());
 				}
 
-				
 				if ((*iter).node()->marked() == false) {
 					pq.push((*iter).node());
 					(*iter).node()->setMarked(true);
 				}
 			}
 		}
-		pq.pop();			
-					
+		pq.pop();					
 	}
 	for (auto node = pDest; node->previous() != 0; node = node->previous())
 	{
@@ -436,21 +433,18 @@ template<class NodeType, class ArcType>
 void Graph<NodeType, ArcType>::aStar(Node* pStart, Node* pDest, void(*pProcess)(Node*), std::vector<Node *>& path, int max) {
 
 	priority_queue<Node *, vector<Node*>, NodeSearchCostComparer> pq;
-	//initialise g cost to 0
 	pStart->setData(NodeType(get<0>(pStart->data()), 0, get<2>(pStart->data()), get<3>(pStart->data()), get<4>(pStart->data())));
 	pq.push(pStart);
 	pStart->setMarked(true);
 	
-	//get x position and y position of the goal, get pixel coordinates
 	float gx = get<3>(pDest->data());
 	float gy = get<4>(pDest->data());
 
-	//compute estimated distance goal from each node to goal node, calculate h cost
 	for (int i = 0; i < max; i++) {
 		int x = get<3>(nodeArray()[i]->data());
 		int y = get<4>(nodeArray()[i]->data());
 
-		int dist = sqrt(((gx-x)*(gx-x))+((gy-y)*(gy-y))); //distance in pixels
+		int dist = sqrt(((gx-x)*(gx-x))+((gy-y)*(gy-y)));
 		nodeArray()[i]->setData(NodeType(get<0>(nodeArray()[i]->data()), get<1>(nodeArray()[i]->data()), dist, get<3>(nodeArray()[i]->data()), get<4>(nodeArray()[i]->data())));
 	}
 
@@ -462,19 +456,20 @@ void Graph<NodeType, ArcType>::aStar(Node* pStart, Node* pDest, void(*pProcess)(
 
 			if ((*iter).node() != pq.top()->previous()) {
 
-				int gN = /*get<2>(pq.top()->data()) + */(*iter).weight(); 
-				int hN = get<1>(pq.top()->data());
-				int distC = hN + gN;
+				int hN = get<2>(pq.top()->data());
+				int gN = get<1>(pq.top()->data()) + (*iter).weight();
+				int distC = gN + hN;
 
 				int fC = get<1>((*iter).node()->data()) + get<2>((*iter).node()->data());
 
 				if (distC < fC) {
 
-					(*iter).node()->setPrevious(pq.top());
+					
 					(*iter).node()->setData(NodeType(get<0>((*iter).node()->data()), gN, get<2>((*iter).node()->data()), get<3>((*iter).node()->data()), get<4>((*iter).node()->data())));
+					(*iter).node()->setPrevious(pq.top());
 				}
 
-				if ((*iter).node()->marked() == false) {
+				if ((*iter).node()->marked() != true) {
 
 					pq.push((*iter).node());
 					(*iter).node()->setMarked(true);
@@ -488,6 +483,10 @@ void Graph<NodeType, ArcType>::aStar(Node* pStart, Node* pDest, void(*pProcess)(
 		path.push_back(node);
 	}
 	path.push_back(pStart);
+	std::reverse(path.begin(), path.end());
+	for (int i = 0; i < path.size(); i++){
+		pProcess(path[i]);
+	}
 
 }
 
