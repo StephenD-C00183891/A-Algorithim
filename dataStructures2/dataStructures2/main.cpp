@@ -53,6 +53,8 @@ int main(int argc, char *argv[]) {
 	vector<sf::CircleShape> aFillCircles;
 	vector<sf::VertexArray> lines2;
 	vector<sf::CircleShape> selectCircles;
+	vector<sf::Text> placeNames;
+	vector<sf::Text> weightList;
 	
 	bool start = false, end = false;
 	string c;
@@ -64,6 +66,9 @@ int main(int argc, char *argv[]) {
 	int aFillMax = 0;
 	int lineMax = 0;
 	int circleMax = 0;
+	int selectMax = 0;
+	int nameCount = 0;
+	int weightCount = 0;
 	ifstream myfile;
 
 	
@@ -89,6 +94,15 @@ int main(int argc, char *argv[]) {
 		lines[1].color = sf::Color::Red;
 		lineMax++;
 		lines2.push_back(lines);
+
+		sf::Text weights;
+		weights.setFont(font);
+		weights.setString(std::to_string(weight));
+		weights.setColor(sf::Color::Green);
+		weights.setPosition(((lines[0].position.x + lines[1].position.x)/2) - 10, ((lines[0].position.y+lines[1].position.y)/2) - 10);
+		weights.setCharacterSize(20);
+		weightList.push_back(weights);
+		weightCount++;
 	}
     myfile.close();
 
@@ -108,6 +122,17 @@ int main(int argc, char *argv[]) {
 		circle.setPosition(get<3>(graph.nodeArray()[i]->data()), get<4>(graph.nodeArray()[i]->data()));
 		circles.push_back(circle);
 		circleMax++;
+
+		//create a formatted text string
+		sf::Text placeName;
+		placeName.setFont(font);
+		placeName.setString(get<0>(graph.nodeArray()[i]->data()));
+		placeName.setColor(sf::Color::Black);
+		placeName.setPosition(get<3>(graph.nodeArray()[i]->data()) + 15, get<4>(graph.nodeArray()[i]->data()) + 6);
+		placeName.setCharacterSize(20);
+		placeNames.push_back(placeName);
+		nameCount++;
+		//visit(n);
 	}
 
 	while (window.isOpen())
@@ -125,14 +150,22 @@ int main(int argc, char *argv[]) {
 			{
 				start = true;
 				startNode = i;
-				
+				sf::CircleShape circle(20);
+				circle.setPosition(circles[i].getPosition().x, circles[i].getPosition().y);
+				circle.setFillColor(sf::Color::Yellow);
+				selectCircles.push_back(circle);
+				selectMax++;
 			}
 
 			else if (mouseCircle.getGlobalBounds().intersects(circles[i].getGlobalBounds()) && start == true && sf::Mouse::isButtonPressed(sf::Mouse::Right))
 			{
 				end = true;
 				endNode = i;
-
+				sf::CircleShape circle(20);
+				circle.setPosition(circles[i].getPosition().x, circles[i].getPosition().y);
+				circle.setFillColor(sf::Color::Yellow);
+				selectCircles.push_back(circle);
+				selectMax++;
 			}
 		}
 
@@ -145,20 +178,6 @@ int main(int argc, char *argv[]) {
 
 			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Escape))
 				window.close();
-			
-			/*}
-				else if (mouseX > circles[i].getPosition().x && mouseX < circles[i].getPosition().x + 20
-					&& mouseY > circles[i].getPosition().y && mouseY < circles[i].getPosition().y + 20
-					&& start == true && sf::Mouse::isButtonPressed(sf::Mouse::Left))
-				{
-					end = true;
-					endNode = i;
-					
-					endCircle.setPosition(get<3>(graph.nodeArray()[i]->data()), get<4>(graph.nodeArray()[i]->data()));
-					endCircle.setFillColor(sf::Color::Blue);
-
-				}
-			}*/
 		}
 
 		if (start == true && end == true) {
@@ -170,7 +189,6 @@ int main(int argc, char *argv[]) {
 				circle.setFillColor(sf::Color::Red);
 				fillCircles.push_back(circle);
 				fillMax++;
-				//visit(n);
 			}
 
 			for (Node* p : attemptedPath) {
@@ -206,6 +224,18 @@ int main(int argc, char *argv[]) {
 
 			window.draw(fillCircles[i]);
 		}
+		for (int i = 0; i < selectMax; i++) {
+
+			window.draw(selectCircles[i]);
+		}
+
+		for (int i = 0; i < nameCount; i++) {
+			window.draw(placeNames[i]);
+		}
+		for (int i = 0; i < weightCount; i++) {
+			window.draw(weightList[i]);
+		}
+
 
 		
 		window.draw(mouseCircle);
