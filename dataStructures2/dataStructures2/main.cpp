@@ -70,7 +70,8 @@ int main(int argc, char *argv[]) {
 
 	myfile.open ("nodes2.txt");
 	while ( myfile >> c >> x >> y) {
-		graph.addNode(tuple<string, int, int, int, int>(c, 99999999, 99999999, x, y), i++);
+		//destination string, g cost, h cost, xposition, yposition
+		graph.addNode(tuple<string, int, int, int, int>(c, std::numeric_limits<int>::max(), std::numeric_limits<int>::max(), x, y), i++);
 	}
 	myfile.close();
 

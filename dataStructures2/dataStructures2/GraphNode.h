@@ -145,8 +145,7 @@ void GraphNode<NodeType, ArcType>::removeArc( Node* pNode ) {
 
      int size = m_arcList.size();
      // find the arc that matches the node
-     for( ; iter != endIter && m_arcList.size() == size;  
-                                                    ++iter ) {
+     for( ; iter != endIter && m_arcList.size() == size; ++iter ) {
           if ( (*iter).node() == pNode) {
              m_arcList.remove( (*iter) );
           }                           
