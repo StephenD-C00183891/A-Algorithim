@@ -1,0 +1,76 @@
+﻿Build started 17/02/2016 11:11:20.
+     1>Project "C:\A-Algorithim-master\AStar\AStar\AStar.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\SFML-2.3.2\include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\AStar.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
+         main.cpp
+     1>c:\a-algorithim-master\astar\astar\main.cpp(163): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\a-algorithim-master\astar\astar\main.cpp(219): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\a-algorithim-master\astar\astar\main.cpp(264): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\a-algorithim-master\astar\astar\main.cpp(269): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\a-algorithim-master\astar\astar\main.cpp(274): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\a-algorithim-master\astar\astar\main.cpp(279): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\a-algorithim-master\astar\astar\main.cpp(283): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\a-algorithim-master\astar\astar\main.cpp(288): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\a-algorithim-master\astar\astar\main.cpp(291): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\a-algorithim-master\astar\astar\main.cpp(295): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\a-algorithim-master\astar\astar\main.cpp(299): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\a-algorithim-master\astar\astar\graph.h(503): warning C4244: 'initializing' : conversion from 'const float' to 'int', possible loss of data
+                 c:\a-algorithim-master\astar\astar\graph.h(483) : while compiling class template member function 'void Graph<std::tuple<std::string,float,float,float,float>,int>::aStar(GraphNode<std::tuple<std::string,float,float,float,float>,int> *,GraphNode<std::tuple<std::string,float,float,float,float>,int> *,void (__cdecl *)(GraphNode<std::tuple<std::string,float,float,float,float>,int> *),std::vector<GraphNode<std::tuple<std::string,float,float,float,float>,int> *,std::allocator<_Ty>> &,int,std::vector<_Ty,std::allocator<_Ty>> &)'
+                 with
+                 [
+                     _Ty=GraphNode<std::tuple<std::string,float,float,float,float>,int> *
+                 ]
+                 c:\a-algorithim-master\astar\astar\main.cpp(207) : see reference to function template instantiation 'void Graph<std::tuple<std::string,float,float,float,float>,int>::aStar(GraphNode<std::tuple<std::string,float,float,float,float>,int> *,GraphNode<std::tuple<std::string,float,float,float,float>,int> *,void (__cdecl *)(GraphNode<std::tuple<std::string,float,float,float,float>,int> *),std::vector<GraphNode<std::tuple<std::string,float,float,float,float>,int> *,std::allocator<_Ty>> &,int,std::vector<_Ty,std::allocator<_Ty>> &)' being compiled
+                 with
+                 [
+                     _Ty=GraphNode<std::tuple<std::string,float,float,float,float>,int> *
+                 ]
+                 c:\a-algorithim-master\astar\astar\main.cpp(56) : see reference to class template instantiation 'Graph<std::tuple<std::string,float,float,float,float>,int>' being compiled
+     1>c:\a-algorithim-master\astar\astar\graph.h(504): warning C4244: 'initializing' : conversion from 'const float' to 'int', possible loss of data
+     1>c:\a-algorithim-master\astar\astar\graph.h(547): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\tuple(80): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\tuple(233) : see reference to function template instantiation 'std::_Tuple_val<_This>::_Tuple_val<_Ty>(_Other &&)' being compiled
+                 with
+                 [
+                     _This=float
+         ,            _Ty=int
+         ,            _Other=int
+                 ]
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\tuple(233) : see reference to function template instantiation 'std::_Tuple_val<_This>::_Tuple_val<_Ty>(_Other &&)' being compiled
+                 with
+                 [
+                     _This=float
+         ,            _Ty=int
+         ,            _Other=int
+                 ]
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\tuple(233) : see reference to function template instantiation 'std::tuple<float,float,float,float>::tuple<_Ty,_Ty,int&,int&,std::_Tuple_enable<std::tuple<>,std::tuple<>>::type>(_This2 &&,_Ty &&,int &,int &)' being compiled
+                 with
+                 [
+                     _Ty=int
+         ,            _This2=int
+                 ]
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\tuple(233) : see reference to function template instantiation 'std::tuple<float,float,float,float>::tuple<_Ty,_Ty,int&,int&,std::_Tuple_enable<std::tuple<>,std::tuple<>>::type>(_This2 &&,_Ty &&,int &,int &)' being compiled
+                 with
+                 [
+                     _Ty=int
+         ,            _This2=int
+                 ]
+                 c:\a-algorithim-master\astar\astar\main.cpp(89) : see reference to function template instantiation 'std::tuple<std::string,float,float,float,float>::tuple<std::string&,int,int,int&,int&,std::_Tuple_enable<std::tuple<>,std::tuple<>>::type>(_This2,int &&,int &&,int &,int &)' being compiled
+                 with
+                 [
+                     _This2=std::string &
+                 ]
+                 c:\a-algorithim-master\astar\astar\main.cpp(89) : see reference to function template instantiation 'std::tuple<std::string,float,float,float,float>::tuple<std::string&,int,int,int&,int&,std::_Tuple_enable<std::tuple<>,std::tuple<>>::type>(_This2,int &&,int &&,int &,int &)' being compiled
+                 with
+                 [
+                     _This2=std::string &
+                 ]
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\A-Algorithim-master\AStar\AStar\Debug\AStar.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\SFML-2.3.2\lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\A-Algorithim-master\AStar\AStar\Debug\AStar.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\A-Algorithim-master\AStar\AStar\Debug\AStar.lib" /MACHINE:X86 Debug\main.obj
+         Debug\stdafx.obj
+         AStar.vcxproj -> C:\A-Algorithim-master\AStar\AStar\Debug\AStar.exe
+     1>Done Building Project "C:\A-Algorithim-master\AStar\AStar\AStar.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.67
